@@ -5,6 +5,73 @@
     <title>팀페이지 제작</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/input.css') }}">
+    <style>
+        .ai-loading-overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(16, 18, 24, 0.56);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+        }
+
+        .ai-loading-overlay.is-active {
+            display: flex;
+        }
+
+        .ai-loading-panel {
+            width: min(360px, calc(100vw - 40px));
+            padding: 28px 26px;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+            text-align: center;
+        }
+
+        .ai-loading-spinner {
+            width: 38px;
+            height: 38px;
+            margin: 0 auto 16px;
+            border: 4px solid #e8e0ff;
+            border-top-color: #7c3aed;
+            border-radius: 50%;
+            animation: aiSpin 0.9s linear infinite;
+        }
+
+        .ai-loading-title {
+            margin: 0 0 8px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #222;
+        }
+
+        .ai-loading-desc {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        @keyframes aiSpin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        body.dark-mode .ai-loading-panel {
+            background: #202232;
+        }
+
+        body.dark-mode .ai-loading-title {
+            color: #f4f4f8;
+        }
+
+        body.dark-mode .ai-loading-desc {
+            color: #c9cad6;
+        }
+    </style>
 </head>
 <body>
 <div class="page">
@@ -15,9 +82,12 @@
 
             <nav class="nav-menu">
                 <a href="/">ROOT팀 소개</a>
-                <a href="/community">커뮤니티</a>
+                <a href="/board">질문게시판</a>
                 <a href="{{ url_for('input_page') }}" class="active">팀페이지 제작</a>
                 <a href="/contact">Contact</a>
+                    <button id="darkModeBtn" class="dark-mode-btn" type="button">
+                        🌙
+                    </button>
             </nav>
         </div>
     </header>
@@ -51,10 +121,25 @@
                 <label>팀 한 줄 소개</label>
                 <input type="text" name="team_intro" placeholder="팀 소개를 입력하세요">
 
-                <label>팀 대표 사진</label>
-                <div class="file-row">
-                    <input type="file" name="team_image">
+            <label>팀 대표 사진</label>
+
+            <div class="sketch-upload-box">
+                <div class="sketch-upload-top">
+
+                    <input type="file" name="team_image" class="sketch-file-input">
+
+                    <button type="button" class="file-clear-btn sketch-cancel-btn">
+                        취소
+                    </button>
                 </div>
+
+                <textarea
+                    class="sketch-ai-input"
+                    name="team_prompt"
+                    placeholder="AI로 팀 대표 사진을 생성하고 싶다면 팀의 특징을 입력해주세요.
+                예) 보라색 분위기, 개발자 팀, 나무 뿌리 로고, 미래적인 느낌, ROOT 팀 감성"></textarea>
+            </div>
+
             </section>
             {% endif %}
 
@@ -130,9 +215,24 @@
                 </div>
 
                 <label>프로필 사진</label>
-                <div class="file-row">
-                    <input type="file" name="profile_image">
-                </div>
+
+                <div class="sketch-upload-box">
+                    <div class="sketch-upload-top">
+
+                        <input type="file" name="profile_image" class="sketch-file-input">
+
+                        <button type="button" class="file-clear-btn sketch-cancel-btn">
+                            취소
+                        </button>
+                    </div>
+
+                <textarea
+                    class="sketch-ai-input"
+                    name="profile_ai_prompt"
+                    placeholder="AI로 프로필 사진을 생성하고 싶다면 본인의 특징을 입력해주세요.
+
+                예) 안경 쓴 개발자, 보라색 후드, 차분한 분위기, 게임 좋아함"></textarea>
+
                 <label>GitHub 아이디</label>
                     <input type="text" name="github" placeholder="GitHub 아이디 입력" value="{{ member.github|replace('https://github.com/', '') if member else '' }}">
 
@@ -143,12 +243,26 @@
                     <input type="url" name="portfolio_link" placeholder="https://example.com" value="{{ member.portfolio_link if member else '' }}">
 
                 <label>포트폴리오 파일</label>
+
                 <div class="file-row">
                     <input type="file" name="portfolio_file">
+
+                    <button type="button" class="file-clear-btn">
+                        취소
+                    </button>
+
                     {% if member and member.portfolio_file %}
-                    <p class="current-file">현재 파일: {{ member.portfolio_file_name }}</p>
-                    <input type="hidden" name="portfolio_file_path" value="{{ member.portfolio_file }}">
-                    <input type="hidden" name="portfolio_file_name" value="{{ member.portfolio_file_name }}">
+                    <p class="current-file">
+                        현재 파일: {{ member.portfolio_file_name }}
+                    </p>
+
+                    <input type="hidden"
+                        name="portfolio_file_path"
+                        value="{{ member.portfolio_file }}">
+
+                    <input type="hidden"
+                        name="portfolio_file_name"
+                        value="{{ member.portfolio_file_name }}">
                     {% endif %}
                 </div>
 
@@ -195,13 +309,24 @@
             <p style="text-align:right; font-size:13px; color:#666;">
                 현재 {{ member_count }} / 4명
             </p>
-
             <div class="form-buttons">
+
+            <div class="form-buttons-left">
+                {% if not member %}
                 <button type="button" class="btn-light"
                         onclick="location.href='{{ url_for('reset_team') }}'">
                     처음부터
                 </button>
+                {% endif %}
 
+                {% if not member and member_count > 0 %}
+                <button type="submit" name="action" value="back" class="btn-light back-btn" formnovalidate>
+                    뒤로가기
+                </button>
+                {% endif %}
+            </div>
+
+            <div class="form-buttons-right">
                 {% if member %}
                 <button type="submit" name="action" value="edit" class="btn-outline">
                     수정 완료
@@ -223,11 +348,43 @@
                 {% endif %}
             </div>
 
+        </div>
+    </div>
+
         </form>
     </div>
 </div>
+<div class="ai-loading-overlay" id="aiLoadingOverlay" role="status" aria-live="polite">
+    <div class="ai-loading-panel">
+        <div class="ai-loading-spinner" aria-hidden="true"></div>
+        <p class="ai-loading-title">AI 이미지 생성 중</p>
+        <p class="ai-loading-desc">프롬프트를 바탕으로 사진을 만들고 있어요. 잠시만 기다려주세요.</p>
+    </div>
+</div>
 <script>
-document.querySelector("form").addEventListener("keydown", function(e) {
+const inputForm = document.querySelector("form");
+const aiLoadingOverlay = document.getElementById("aiLoadingOverlay");
+
+function hasValue(selector) {
+    const field = inputForm.querySelector(selector);
+    return field && field.value.trim().length > 0;
+}
+
+function hasFile(selector) {
+    const field = inputForm.querySelector(selector);
+    return field && field.files && field.files.length > 0;
+}
+
+inputForm.addEventListener("submit", function() {
+    const needsTeamImage = hasValue('textarea[name="team_prompt"]') && !hasFile('input[name="team_image"]');
+    const needsProfileImage = hasValue('textarea[name="profile_ai_prompt"]') && !hasFile('input[name="profile_image"]');
+
+    if (needsTeamImage || needsProfileImage) {
+        aiLoadingOverlay.classList.add("is-active");
+    }
+});
+
+inputForm.addEventListener("keydown", function(e) {
     if (e.key === "Enter" && e.target.tagName !== "TEXTAREA" && !e.isComposing) {
         e.preventDefault();
     }
@@ -278,6 +435,35 @@ if (portfolioList && addPortfolioBtn) {
 
     updatePortfolioHeaders();
 }
+</script>
+<script>
+    const darkModeBtn = document.getElementById("darkModeBtn");
+
+    // 페이지가 열릴 때 저장된 다크모드 상태 적용
+    if (localStorage.getItem("darkMode") === "on") {
+        document.body.classList.add("dark-mode");
+        darkModeBtn.textContent = "☀️";
+    }
+
+    darkModeBtn.addEventListener("click", function () {
+        document.body.classList.toggle("dark-mode");
+
+        if (document.body.classList.contains("dark-mode")) {
+            localStorage.setItem("darkMode", "on");
+            darkModeBtn.textContent = "☀️";
+        } else {
+            localStorage.setItem("darkMode", "off");
+            darkModeBtn.textContent = "🌙";
+        }
+    });
+</script>
+<script>
+document.querySelectorAll(".file-clear-btn").forEach(function(button) {
+    button.addEventListener("click", function() {
+        const fileInput = button.parentElement.querySelector('input[type="file"]');
+        fileInput.value = "";
+    });
+});
 </script>
 </body>
 </html>
