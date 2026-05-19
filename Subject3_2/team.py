@@ -393,7 +393,6 @@ def update_member():
         "major": request.form.get("major", "").strip(),
         "phone": request.form.get("phone", "").strip(),
         "email": request.form.get("email", "").strip(),
-        "gender": request.form.get("gender", "").strip(),
         "role": request.form.get("role", "").strip(),
         "languages": languages,
         "github": github_url,
