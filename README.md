@@ -334,10 +334,7 @@ git push origin ymk
         • 전체 화면 비율 및 레이아웃 조정<br/>
         • 비상 연락망 페이지 제작<br/>
         • 팀 영상 제작
-      </sub></div><br/>
-      <a href="https://github.com/2024110423osh">
-        <img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white"/>
-      </a>
+      </sub></div>
     </td>
     <td align="center" valign="top" width="33%">
       <img src="Subject3_2/static/images/root-member2.png" width="130"/><br/><br/>
@@ -352,10 +349,7 @@ git push origin ymk
         • 게시판 데이터 구조 설계 (시드/런타임 분리)<br/>
         • Docker 배포 환경 구성 (Dockerfile, docker-compose, uWSGI)<br/>
         • Git 브랜치 전략 수립, 협업 규칙 설계, merge 전담
-      </sub></div><br/><br/>
-      <a href="https://github.com/yumiykim">
-        <img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white"/>
-      </a>
+      </sub></div>
     </td>
     <td align="center" valign="top" width="33%">
       <img src="Subject3_2/static/images/root-member3.png" width="130"/><br/><br/>
@@ -366,7 +360,21 @@ git push origin ymk
         • 질문 게시판 백엔드 기능(글/댓글 작성·수정·삭제) 구현<br/>
         • 게시글 및 댓글 수정을 위한 비밀번호 4자리 권한 검사 로직 구현<br/>
         • 프론트엔드 화면(HTML)과 백엔드 데이터 연결 작업
-      </sub></div><br/><br/><br/><br/><br/>
+      </sub></div>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/2024110423osh">
+        <img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white"/>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/yumiykim">
+        <img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white"/>
+      </a>
+    </td>
+    <td align="center">
       <a href="https://github.com/JeeyoonO">
         <img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white"/>
       </a>
