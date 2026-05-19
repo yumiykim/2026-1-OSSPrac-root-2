@@ -221,6 +221,75 @@ docker compose up --build
 
 ---
 
+## 🤝 Contributing
+
+### 브랜치 전략
+
+- `upstream` : 중앙 레포지토리 / `origin` : fork한 나의 개인 레포지토리
+- `develop` : 실제 개발 내용이 모이는 통합 브랜치. 모든 PR의 base 브랜치
+- `main` : 최종 제출용 브랜치. develop에서 검증된 코드만 merge
+- 작업은 반드시 **본인 이름 브랜치**에서 진행합니다. (예: `ymk`)
+- PR 생성 후 다른 팀원에게 코드 리뷰 요청
+- **merge는 본인이 직접 하지 않고** 다른 팀원에게 요청
+- merge 방향: `base(중앙 레포 develop)` ← `head(개인 레포 이름 브랜치)`
+
+---
+
+### 작업 흐름
+
+**1️⃣ 작업 전 — 최신 코드 반영**
+
+```bash
+git checkout ymk          # 나의 개인 브랜치로 이동
+git pull upstream develop # 중앙 레포 최신 사항 반영
+```
+
+**2️⃣ 작업 후 — 나의 코드 올리기**
+
+```bash
+git add .
+git commit -m "커밋 메시지"
+git pull upstream develop # 충돌 방지를 위해 push 전 최신화
+git push origin ymk
+```
+
+**3️⃣ PR 생성**
+
+1. GitHub에서 `Pull requests` → `New pull request`
+2. 브랜치 방향 확인
+   - base repository: 중앙 레포지토리 / base branch: `develop`
+   - head repository: 내 fork 레포지토리 / compare branch: `ymk`
+3. PR 생성 후 다른 팀원에게 코드 리뷰 요청
+4. 본인이 직접 merge하지 않고 다른 팀원에게 merge 요청
+
+---
+
+### 커밋 메시지 컨벤션
+
+| 태그 | 설명 | 예시 |
+|------|------|------|
+| `Feat` | 새로운 기능 추가 | `Feat: 팀원 소개 페이지 추가` |
+| `Fix` | 버그 수정 | `Fix: 팀원 카드 클릭 시 상세페이지 이동 오류 수정` |
+| `Design` | UI 스타일 및 레이아웃 변경 | `Design: 메인 페이지 레이아웃 및 색상 수정` |
+| `Docs` | 문서 수정 (README, 주석 등) | `Docs: 프로젝트 실행 방법 README에 추가` |
+| `Refactor` | 리팩토링 (기능 변화 없음) | `Refactor: 팀원 데이터 처리 로직 구조 개선` |
+| `Chore` | 설정/패키지/환경 변경 | `Chore: 파일 경로 설정 수정` |
+| `Improve` | 기존 기능 개선 (성능, UX, 안정성) | `Improve: AI 이미지 생성 응답 안정성 향상` |
+
+### PR 제목 규칙
+
+| 태그 | 설명 | 예시 |
+|------|------|------|
+| `[Feature]` | 새로운 기능 추가 | ✨ `[Feature] #12 - 마이페이지 기능 추가` |
+| `[Fix]` | 버그 수정 | 🐛 `[Fix] #15 - 로그인 버튼 오류 수정` |
+| `[Design]` | UI 스타일 및 레이아웃 | 🎨 `[Design] #21 - 헤더 스타일 변경` |
+| `[Docs]` | 문서 수정 | 📝 `[Docs] #30 - README 사용법 수정` |
+| `[Refactor]` | 리팩토링 | ♻️ `[Refactor] #35 - API 요청 함수 리팩토링` |
+| `[Chore]` | 환경 설정 변경 | 🔧 `[Chore] #40 - webpack 설정 변경` |
+| `[Improve]` | 기존 기능 개선 | 📈 `[Improve] #28 - 주문 조회 성능 최적화` |
+
+---
+
 ## 🌿 ROOT 팀을 소개합니다
 
 <table>
