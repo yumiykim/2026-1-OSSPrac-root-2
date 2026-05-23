@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>ROOT 팀 소개</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+</head>
+<body>
+    <div class="page">
+
+        <header class="navbar">
+            <div class="nav-inner">
+                <a href="{{ url_for('index') }}" class="logo">OSSPrac</a>
+
+                <nav class="nav-menu">
+                    <a href="/" class="active">ROOT팀 소개</a>
+                    <a href="/community">커뮤니티</a>
+                    <a href="/input">팀페이지 제작</a>
+                    <a href="/contact">Contact</a>
+                </nav>
+            </div>
+        </header>
+
+        <div class="container">
+
+            <div class="card team-card">
+                <div class="team-image"></div>
+
+                <h1>TEAM ROOT</h1>
+                <p class="team-desc">
+                ROOT 팀은 '시작'과 '기초'를 의미하는 이름처럼, 웹 개발의 기본부터 탄탄하게 구축하는 것을 목표로 합니다. 각 팀원이 중심이 되어 협력하고, 프로젝트의 뿌리를 단단히 만들어 완성도 높은 결과를 만들어가는 팀입니다.
+                </p>
+            </div>
+
+            <div class="card member-card">
+    <h3>팀원 소개</h3>
+
+    <div class="members">
+        <a href="/members/1" class="member">
+            <div class="member-info">
+                <span class="member-name">오승현</span>
+                <span class="member-role">Team Leader, Frontend</span>
+            </div>
+            <div class="profile" style="background-image: url('{{ url_for('static', filename='images/root-member1.png') }}');"></div>
+        </a>
+
+        <a href="/members/2" class="member">
+            <div class="member-info">
+                <span class="member-name">김유미</span>
+                <span class="member-role">Backend</span>
+            </div>
+            <div class="profile" style="background-image: url('{{ url_for('static', filename='images/root-member2.png') }}');"></div>
+        </a>
+
+        <a href="/members/3" class="member">
+            <div class="member-info">
+                <span class="member-name">오지윤</span>
+                <span class="member-role">Backend</span>
+            </div>
+            <div class="profile" style="background-image: url('{{ url_for('static', filename='images/root-member3.png') }}');"></div>
+        </a>
+    </div>
+</div>
+    <section class="team-video-section">
+        <p class="video-subtitle">ROOT, We Grow Together</p>
+        <h1 class="video-title">
+            Reliable · Open · Origin · Together
+        </h1>
+
+        <video class="team-video" controls>
+            <source src="{{ url_for('static', filename='videos/root-video.mp4') }}" type="video/mp4">
+            브라우저가 영상을 지원하지 않습니다.
+        </video>
+    </section>
+
+        </div>
+    </div>
+</body>
+</html>

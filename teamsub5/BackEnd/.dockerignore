@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.git/
+.gitignore
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+static/uploads/*
+!static/uploads/.gitkeep

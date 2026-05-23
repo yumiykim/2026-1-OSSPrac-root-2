@@ -1,0 +1,18 @@
+version: "3.0"
+
+services:
+  frontapp:
+    build: ./FrontEnd
+    image: yumiykim/frontapp:latest
+    ports:
+      - "80:80"
+    env_file:
+      - ./FrontEnd/.env
+    volumes:
+      - ./FrontEnd/instance:/app/instance
+      - ./FrontEnd/static/uploads:/app/static/uploads
+
+  backapp:
+    build: ./BackEnd
+    ports:
+      - "5001:5000"

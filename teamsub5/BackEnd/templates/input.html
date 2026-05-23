@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>팀페이지 제작</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/input.css') }}">
+</head>
+<body>
+<div class="page">
+
+    <header class="navbar">
+        <div class="nav-inner">
+            <a href="{{ url_for('index') }}" class="logo">OSSPrac</a>
+
+            <nav class="nav-menu">
+                <a href="/">ROOT팀 소개</a>
+                <a href="/community">커뮤니티</a>
+                <a href="{{ url_for('input_page') }}" class="active">팀페이지 제작</a>
+                <a href="/contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="input-container">
+
+        <h1 class="input-title">
+            {% if member %}
+                팀원 정보 수정
+            {% elif member_count == 0 %}
+                팀 및 팀원 정보 입력
+            {% elif member_count < 4 %}
+                팀원 정보 입력
+            {% else %}
+                팀원 입력 완료
+            {% endif %}
+        </h1>
+
+        <form action="{{ url_for('update_member') }}" method="post" enctype="multipart/form-data">
+            {% if member %}
+            <input type="hidden" name="member_id" value="{{ member.id }}">
+            {% endif %}
+
+            {% if not member and member_count == 0 %}
+            <section class="form-card">
+                <h2>팀 정보</h2>
+
+                <label>팀명</label>
+                <input type="text" name="team_name" placeholder="팀명을 입력하세요">
+
+                <label>팀 한 줄 소개</label>
+                <input type="text" name="team_intro" placeholder="팀 소개를 입력하세요">
+
+                <label>팀 대표 사진</label>
+                <div class="file-row">
+                    <input type="file" name="team_image">
+                </div>
+            </section>
+            {% endif %}
+
+            {% if member or member_count < 4 %}
+            {% set portfolios = member.portfolio if member and member.portfolio else [{}] %}
+            <section class="form-card">
+                <h2>
+                    {% if member %}
+                        팀원 정보 수정
+                    {% elif member_count == 0 %}
+                        첫 번째 팀원 정보
+                    {% else %}
+                        {{ member_count + 1 }}번째 팀원 정보
+                    {% endif %}
+                </h2>
+
+                <div class="form-grid">
+                    <div>
+                        <label>이름</label>
+                        <input type="text" name="name" value="{{ member.name if member else '' }}">
+                    </div>
+
+                    <div>
+                        <label>학번</label>
+                        <input type="text" name="student_number" value="{{ member.student_number if member else '' }}">
+                    </div>
+
+                    <div>
+                        <label>전공</label>
+                        <input type="text" name="major" value="{{ member.major if member else '' }}">
+                    </div>
+
+                    <div>
+                        <label>핸드폰</label>
+                        <input type="text" name="phone" value="{{ member.phone if member else '' }}">
+                    </div>
+
+                    <div>
+                        <label>이메일</label>
+                        <input type="email" name="email" value="{{ member.email if member else '' }}">
+                    </div>
+                </div>
+
+                <div class="option-area">
+                    <div>
+                        <label>성별</label>
+                        <div class="radio-row">
+                            <label><input type="radio" name="gender" value="남자" {% if member and member.gender == '남자' %}checked{% endif %}> 남자</label>
+                            <label><input type="radio" name="gender" value="여자" {% if member and member.gender == '여자' %}checked{% endif %}> 여자</label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label>역할</label>
+                        <div class="radio-row">
+                            <label><input type="radio" name="role" value="팀장" {% if member and member.role == '팀장' %}checked{% endif %}> 팀장</label>
+                            <label><input type="radio" name="role" value="팀원" {% if member and member.role == '팀원' %}checked{% endif %}> 팀원</label>
+                        </div>
+                    </div>
+                </div>
+
+                <label>프로그래밍 언어</label>
+                <div class="radio-row language-row">
+                    <label><input type="checkbox" name="languages" value="Python" {% if member and 'Python' in member.languages %}checked{% endif %}> Python</label>
+                    <label><input type="checkbox" name="languages" value="Java" {% if member and 'Java' in member.languages %}checked{% endif %}> Java</label>
+                    <label><input type="checkbox" name="languages" value="C/C++" {% if member and 'C/C++' in member.languages %}checked{% endif %}> C/C++</label>
+                    <label><input type="checkbox" name="languages" value="HTML/CSS" {% if member and 'HTML/CSS' in member.languages %}checked{% endif %}> HTML/CSS</label>
+                    <label><input type="checkbox" name="languages" value="SQL" {% if member and 'SQL' in member.languages %}checked{% endif %}> SQL</label>
+                    <label class="etc-language">
+                        <input type="checkbox" name="language_etc_check" {% if member_custom_language %}checked{% endif %}>
+                        <input type="text" name="language_etc" placeholder="직접 입력" value="{{ member_custom_language }}">
+                    </label>
+                </div>
+
+                <label>프로필 사진</label>
+                <div class="file-row">
+                    <input type="file" name="profile_image">
+                </div>
+                <label>GitHub 아이디</label>
+                    <input type="text" name="github" placeholder="GitHub 아이디 입력" value="{{ member.github|replace('https://github.com/', '') if member else '' }}">
+
+                <label>Instagram 아이디</label>
+                    <input type="text" name="sns" placeholder="Instagram 아이디 입력" value="{{ member.sns|replace('https://instagram.com/', '') if member else '' }}">
+
+                <label>포트폴리오 링크</label>
+                    <input type="url" name="portfolio_link" placeholder="https://example.com" value="{{ member.portfolio_link if member else '' }}">
+
+                <label>포트폴리오 파일</label>
+                <div class="file-row">
+                    <input type="file" name="portfolio_file">
+                    {% if member and member.portfolio_file %}
+                    <p class="current-file">현재 파일: {{ member.portfolio_file_name }}</p>
+                    <input type="hidden" name="portfolio_file_path" value="{{ member.portfolio_file }}">
+                    <input type="hidden" name="portfolio_file_name" value="{{ member.portfolio_file_name }}">
+                    {% endif %}
+                </div>
+
+                <label>포트폴리오</label>
+
+                <div class="portfolio-list" id="portfolioList">
+                    {% for portfolio in portfolios %}
+                    {% set period_parts = portfolio.period.split(' ~ ') if portfolio.period else ['', ''] %}
+                    <div class="portfolio-form">
+                        <div class="portfolio-form-header">
+                            <strong>프로젝트 {{ loop.index }}</strong>
+                            <button type="button" class="portfolio-remove-btn">삭제</button>
+                        </div>
+
+                        <input type="text" name="portfolio_title" placeholder="프로젝트명" value="{{ portfolio.title }}">
+
+                        <div class="portfolio-date-row">
+                            <input type="date" name="portfolio_start_date" value="{{ period_parts[0] }}">
+                            <span>~</span>
+                            <input type="date" name="portfolio_end_date" value="{{ period_parts[1] }}">
+                        </div>
+
+                        <input type="text" name="portfolio_role" placeholder="역할" value="{{ portfolio.role }}">
+
+                        <textarea name="portfolio_desc" placeholder="설명">{{ portfolio.desc }}</textarea>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <button type="button" class="portfolio-add-btn" id="addPortfolioBtn">
+                    프로젝트 추가
+                </button>
+            </section>
+            {% else %}
+            <section class="form-card">
+                <h2>팀원 입력 완료</h2>
+                <p style="color:#666; font-size:15px; line-height:1.7;">
+                    최대 4명의 팀원 정보가 모두 입력되었습니다.<br>
+                    제출하기 버튼을 눌러 결과 페이지로 이동하세요.
+                </p>
+            </section>
+            {% endif %}
+
+            <p style="text-align:right; font-size:13px; color:#666;">
+                현재 {{ member_count }} / 4명
+            </p>
+
+            <div class="form-buttons">
+                <button type="button" class="btn-light"
+                        onclick="location.href='{{ url_for('reset_team') }}'">
+                    처음부터
+                </button>
+
+                {% if member %}
+                <button type="submit" name="action" value="edit" class="btn-outline">
+                    수정 완료
+                </button>
+                {% elif member_count < 4 %}
+                <button type="submit" name="action" value="add" class="btn-outline">
+                    팀원 추가
+                </button>
+                {% else %}
+                <button type="button" class="btn-outline" disabled>
+                    최대 4명 완료
+                </button>
+                {% endif %}
+
+                {% if not member %}
+                <button type="submit" name="action" value="make" class="btn-purple">
+                    제출하기
+                </button>
+                {% endif %}
+            </div>
+
+        </form>
+    </div>
+</div>
+<script>
+document.querySelector("form").addEventListener("keydown", function(e) {
+    if (e.key === "Enter" && e.target.tagName !== "TEXTAREA" && !e.isComposing) {
+        e.preventDefault();
+    }
+});
+
+const portfolioList = document.getElementById("portfolioList");
+const addPortfolioBtn = document.getElementById("addPortfolioBtn");
+
+function updatePortfolioHeaders() {
+    if (!portfolioList) {
+        return;
+    }
+
+    portfolioList.querySelectorAll(".portfolio-form").forEach(function(item, index) {
+        item.querySelector("strong").textContent = "프로젝트 " + (index + 1);
+        item.querySelector(".portfolio-remove-btn").disabled = portfolioList.children.length === 1;
+    });
+}
+
+function bindPortfolioRemove(button) {
+    button.addEventListener("click", function() {
+        if (portfolioList.children.length === 1) {
+            button.closest(".portfolio-form").querySelectorAll("input, textarea").forEach(function(field) {
+                field.value = "";
+            });
+            return;
+        }
+
+        button.closest(".portfolio-form").remove();
+        updatePortfolioHeaders();
+    });
+}
+
+if (portfolioList && addPortfolioBtn) {
+    portfolioList.querySelectorAll(".portfolio-remove-btn").forEach(bindPortfolioRemove);
+
+    addPortfolioBtn.addEventListener("click", function() {
+        const clone = portfolioList.querySelector(".portfolio-form").cloneNode(true);
+
+        clone.querySelectorAll("input, textarea").forEach(function(field) {
+            field.value = "";
+        });
+
+        bindPortfolioRemove(clone.querySelector(".portfolio-remove-btn"));
+        portfolioList.appendChild(clone);
+        updatePortfolioHeaders();
+    });
+
+    updatePortfolioHeaders();
+}
+</script>
+</body>
+</html>

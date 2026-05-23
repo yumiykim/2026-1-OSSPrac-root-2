@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>비상 연락망</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/contact.css') }}">
+</head>
+<body>
+<div class="page contact-page">
+
+    <header class="navbar">
+        <div class="nav-inner">
+            <a href="{{ url_for('index') }}" class="logo">OSSPrac</a>
+
+            <nav class="nav-menu">
+                <a href="/">ROOT팀 소개</a>
+                <a href="/community">커뮤니티</a>
+                <a href="/input">팀페이지 제작</a>
+                <a href="/contact" class="active">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="input-container">
+    <section class="contact-card">
+        <h1 class="contact-main-title">비상 연락망</h1>
+
+        <div class="contact-title-box">
+            <h2>ROOT Team Contact</h2>
+            <p>팀 프로젝트 진행 중 긴급 상황 발생 시 확인하는 연락망입니다.</p>
+        </div>
+
+            <div class="contact-table-wrap">
+                <table class="contact-table">
+                    <thead>
+                        <tr>
+                            <th>역할</th>
+                            <th>이름</th>
+                            <th>전화번호</th>
+                            <th>이메일</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in members %}
+                        <tr>
+                            <td>
+                                <span class="role-badge">{{ member.role }}</span>
+                            </td>
+                            <td>{{ member.name }}</td>
+                            <td>{{ member.phone }}</td>
+                            <td>{{ member.email }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+</div>
+</body>
+</html>

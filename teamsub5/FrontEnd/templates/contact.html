@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>비상 연락망</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/contact.css') }}">
+</head>
+<body>
+<div class="page contact-page">
+
+    <header class="navbar">
+        <div class="nav-inner">
+            <a href="{{ url_for('index') }}" class="logo">OSSPrac</a>
+
+            <nav class="nav-menu">
+                <a href="/">ROOT팀 소개</a>
+                <a href="/board">질문게시판</a>
+                <a href="{{ url_for('team_page_entry') }}">팀페이지 제작</a>
+                <a href="/contact" class="active">Contact</a>
+                    <button id="darkModeBtn" class="dark-mode-btn" type="button">
+                        🌙
+                    </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="input-container">
+    <section class="contact-card">
+        <h1 class="contact-main-title">비상 연락망</h1>
+
+        <div class="contact-title-box">
+            <h2>ROOT Team Contact</h2>
+            <p>ROOT팀 비상연락망입니다.</p>
+        </div>
+
+            <div class="contact-table-wrap">
+                <table class="contact-table">
+                    <thead>
+                        <tr>
+                            <th>역할</th>
+                            <th>이름</th>
+                            <th>전화번호</th>
+                            <th>이메일</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in members %}
+                        <tr>
+                            <td>
+                                <span class="role-badge">{{ member.role }}</span>
+                            </td>
+                            <td>{{ member.name }}</td>
+                            <td>{{ member.phone }}</td>
+                            <td>{{ member.email }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+</div>
+<script>
+    const darkModeBtn = document.getElementById("darkModeBtn");
+
+    // 페이지가 열릴 때 저장된 다크모드 상태 적용
+    if (localStorage.getItem("darkMode") === "on") {
+        document.body.classList.add("dark-mode");
+        darkModeBtn.textContent = "☀️";
+    }
+
+    darkModeBtn.addEventListener("click", function () {
+        document.body.classList.toggle("dark-mode");
+
+        if (document.body.classList.contains("dark-mode")) {
+            localStorage.setItem("darkMode", "on");
+            darkModeBtn.textContent = "☀️";
+        } else {
+            localStorage.setItem("darkMode", "off");
+            darkModeBtn.textContent = "🌙";
+        }
+    });
+</script>
+</body>
+</html>

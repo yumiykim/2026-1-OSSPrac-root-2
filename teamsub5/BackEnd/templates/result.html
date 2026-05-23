@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>생성된 팀 페이지</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/input.css') }}">
+</head>
+<body>
+<div class="page">
+
+    <header class="navbar">
+        <div class="nav-inner">
+            <a href="{{ url_for('index') }}" class="logo">OSSPrac</a>
+
+            <nav class="nav-menu">
+                <a href="/">ROOT팀 소개</a>
+                <a href="/community">커뮤니티</a>
+                <a href="/input" class="active">팀페이지 제작</a>
+                <a href="/contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <div class="card team-card">
+            <div class="team-image"
+                 style="background-image: url('{{ url_for('static', filename=team.team_image) }}');">
+            </div>
+
+            <h1>{{ team.team_name }}</h1>
+
+            <p class="team-desc">
+                {{ team.team_intro }}
+            </p>
+        </div>
+
+        <div class="card member-card">
+            <h3>팀원 소개</h3>
+
+            <div class="members">
+                {% for member in members %}
+                <a href="/members/{{ member.id }}" class="member">
+                    <div class="member-info">
+                        <span class="member-name">{{ member.name }}</span>
+                        <span class="member-role">{{ member.role }}</span>
+                    </div>
+
+                    <div class="profile"
+                        style="background-image: url('{{ url_for('static', filename=member.image) }}');">
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+
+            {% if members|length == 0 %}
+            <p style="text-align:center; color:#777;">
+                아직 추가된 팀원이 없습니다.
+            </p>
+            {% endif %}
+        </div>
+
+        <div class="form-buttons">
+            <button type="button" class="btn-light"
+                    onclick="location.href='{{ url_for('input_page') }}'">
+                다시 만들기
+            </button>
+
+            <button type="button" class="btn-purple"
+                    onclick="location.href='{{ url_for('index') }}'">
+                메인으로
+            </button>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>
