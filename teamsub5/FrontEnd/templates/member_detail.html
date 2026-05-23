@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>팀원 상세 페이지</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/member_detail.css') }}">
+</head>
+<body class="{% if not is_root_member %}generated-page{% endif %}">
+<div class="page">
+
+    <header class="navbar">
+        <div class="nav-inner">
+            <a href="{{ url_for('index') }}" class="logo">OSSPrac</a>
+
+            <nav class="nav-menu">
+            <a href="/" class="{% if is_root_member %}active{% endif %}">ROOT팀 소개</a>
+            <a href="/board">질문게시판</a>
+            <a href="{{ url_for('team_page_entry') }}" class="{% if not is_root_member %}active{% endif %}">팀페이지 제작</a>
+            <a href="/contact">Contact</a>
+                    <button id="darkModeBtn" class="dark-mode-btn" type="button">
+                        🌙
+                    </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="detail-container">
+
+        {% if not is_root_member %}
+        <div class="detail-toolbar">
+        </div>
+        {% endif %}
+
+        <section class="profile-detail-card">
+            <div class="detail-top">
+                <div class="detail-photo">
+                    <img src="{{ url_for('static', filename=member.image) }}" alt="프로필 사진">
+                </div>
+
+                <div class="detail-info">
+                    <h1>{{ member.name }}</h1>
+
+                    <div class="info-row">
+                        <span>학과</span>
+                        <p>{{ member.major }}</p>
+                    </div>
+
+                    <div class="info-row">
+                        <span>학번</span>
+                        <p>{{ member.student_number }}</p>
+                    </div>
+
+                    <div class="info-row">
+                        <span>역할</span>
+                        <p>{{ member.role }}</p>
+                    </div>
+
+                    <div class="info-row">
+                        <span>언어</span>
+                        <p>{{ member.languages | join(', ') }}</p>
+                    </div>
+
+                    <div class="info-row">
+                        <span>이메일</span>
+                        <p>{{ member.email }}</p>
+                    </div>
+
+                    <div class="info-row">
+                        <span>전화번호</span>
+                        <p>{{ member.phone }}</p>
+                    </div>
+
+                    <div class="detail-buttons">
+                        {% if is_root_member %}
+                        <a href="/" class="small-btn purple">팀페이지로</a>
+                        {% else %}
+                        <a href="{{ url_for('result') }}" class="small-btn purple">팀페이지로</a>
+                        {% endif %}
+
+                        {% if not is_root_member %}
+                        <a href="/input?member_id={{ member.id }}" class="small-btn purple">수정</a>
+                        <form action="{{ url_for('delete_generated_member', member_id=member.id) }}"
+                              method="post"
+                              class="inline-delete-form">
+                            <button type="submit" class="small-btn danger">삭제</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+<section class="link-box-wrap">
+
+    {% if member.github %}
+    <a href="{{ member.github }}"
+       class="link-box"
+       target="_blank">
+
+        <img src="{{ url_for('static', filename='images/github.png') }}"
+             class="link-icon">
+
+        <strong>GitHub</strong>
+
+        <span class="link-handle">
+            {{ member.github | replace('https://github.com/', '@') }}
+        </span>
+    </a>
+
+    {% else %}
+    <div class="link-box disabled-link-box">
+
+        <img src="{{ url_for('static', filename='images/github.png') }}"
+             class="link-icon">
+
+        <strong>GitHub</strong>
+
+        <span class="link-handle">
+            GitHub 아이디를 입력하지 않았습니다.
+        </span>
+    </div>
+    {% endif %}
+
+
+    {% if member.sns %}
+    <a href="{{ member.sns }}"
+       class="link-box"
+       target="_blank">
+
+        <img src="{{ url_for('static', filename='images/instagram.png') }}"
+             class="link-icon">
+
+        <strong>Instagram</strong>
+
+        <span class="link-handle">
+            {{ member.sns | replace('https://instagram.com/', '@') }}
+        </span>
+    </a>
+
+    {% else %}
+    <div class="link-box disabled-link-box">
+
+        <img src="{{ url_for('static', filename='images/instagram.png') }}"
+             class="link-icon">
+
+        <strong>Instagram</strong>
+
+        <span class="link-handle">
+            Instagram 아이디를 입력하지 않았습니다.
+        </span>
+    </div>
+    {% endif %}
+
+</section>
+
+        <section class="portfolio-section">
+            <div class="portfolio-section-header">
+                <h2>Portfolio</h2>
+
+                <div class="portfolio-resource-buttons">
+                    {% if member.portfolio_link %}
+                    <a href="{{ member.portfolio_link }}" class="portfolio-resource-btn" target="_blank">
+                        링크 열기
+                    </a>
+                    {% endif %}
+
+                    {% if member.portfolio_file %}
+                    <a href="{{ url_for('static', filename=member.portfolio_file) }}"
+                       class="portfolio-resource-btn"
+                       download="{{ member.portfolio_file_name }}">
+                        파일 다운로드
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <table class="portfolio-table">
+                <thead>
+                    <tr>
+                        <th>프로젝트명</th>
+                        <th>기간</th>
+                        <th>역할</th>
+                        <th>설명</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in member.portfolio %}
+                    <tr>
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.period | replace(' ~ ', '<br>~ ') | safe }}</td>
+                        <td>{{ item.role }}</td>
+                        <td>{{ item.desc }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+    </div>
+</div>
+<script>
+    const darkModeBtn = document.getElementById("darkModeBtn");
+
+    // 페이지가 열릴 때 저장된 다크모드 상태 적용
+    if (localStorage.getItem("darkMode") === "on") {
+        document.body.classList.add("dark-mode");
+        darkModeBtn.textContent = "☀️";
+    }
+
+    darkModeBtn.addEventListener("click", function () {
+        document.body.classList.toggle("dark-mode");
+
+        if (document.body.classList.contains("dark-mode")) {
+            localStorage.setItem("darkMode", "on");
+            darkModeBtn.textContent = "☀️";
+        } else {
+            localStorage.setItem("darkMode", "off");
+            darkModeBtn.textContent = "🌙";
+        }
+    });
+</script>
+</body>
+</html>

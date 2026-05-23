@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>팀페이지 제작</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/input.css') }}">
+    <style>
+        .ai-loading-overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(16, 18, 24, 0.56);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+        }
+
+        .ai-loading-overlay.is-active {
+            display: flex;
+        }
+
+        .ai-loading-panel {
+            width: min(360px, calc(100vw - 40px));
+            padding: 28px 26px;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+            text-align: center;
+        }
+
+        .ai-loading-spinner {
+            width: 38px;
+            height: 38px;
+            margin: 0 auto 16px;
+            border: 4px solid #e8e0ff;
+            border-top-color: #7c3aed;
+            border-radius: 50%;
+            animation: aiSpin 0.9s linear infinite;
+        }
+
+        .ai-loading-title {
+            margin: 0 0 8px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #222;
+        }
+
+        .ai-loading-desc {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        @keyframes aiSpin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        body.dark-mode .ai-loading-panel {
+            background: #202232;
+        }
+
+        body.dark-mode .ai-loading-title {
+            color: #f4f4f8;
+        }
+
+        body.dark-mode .ai-loading-desc {
+            color: #c9cad6;
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <header class="navbar">
+        <div class="nav-inner">
+            <a href="{{ url_for('index') }}" class="logo">OSSPrac</a>
+
+            <nav class="nav-menu">
+                <a href="/">ROOT팀 소개</a>
+                <a href="/board">질문게시판</a>
+                <a href="{{ url_for('reset_team') }}" class="active">팀페이지 제작</a>
+                <a href="/contact">Contact</a>
+                    <button id="darkModeBtn" class="dark-mode-btn" type="button">
+                        🌙
+                    </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="input-container">
+
+        <h1 class="input-title">
+            {% if edit_team %}
+                팀 정보 수정
+            {% elif member and is_edit_flow %}
+                {{ member_position }}번째 팀원 정보 수정
+            {% elif member %}
+                팀원 정보 수정
+            {% elif member_count == 0 %}
+                팀 및 팀원 정보 입력
+            {% elif member_count < 4 %}
+                팀원 정보 입력
+            {% else %}
+                팀원 입력 완료
+            {% endif %}
+        </h1>
+
+        <form action="{{ url_for('update_member') }}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="flow" value="{{ request.args.get('flow', '') }}">
+            {% if member %}
+            <input type="hidden" name="member_id" value="{{ member.id }}">
+            {% endif %}
+
+            {% if edit_team or (not member and member_count == 0) or (member and member.id == 1000 and request.args.get('flow') == 'edit') %}
+            <section class="form-card">
+                <h2>팀 정보</h2>
+
+                <label>팀명</label>
+                <input type="text" name="team_name" placeholder="팀명을 입력하세요" value="{{ team.team_name if team else '' }}">
+
+                <label>팀 한 줄 소개</label>
+                <input type="text" name="team_intro" placeholder="팀 소개를 입력하세요" value="{{ team.team_intro if team else '' }}">
+
+            <label>팀 대표 사진</label>
+
+            <div class="sketch-upload-box">
+                <div class="sketch-upload-top">
+
+                    <input type="file" name="team_image" class="sketch-file-input">
+
+                    <button type="button" class="file-clear-btn sketch-cancel-btn">
+                        취소
+                    </button>
+                </div>
+
+                <textarea
+                    class="sketch-ai-input"
+                    name="team_prompt"
+                    placeholder="{% if edit_team %}AI 이미지 재생성을 원할 시 새로운 팀 프롬프트를 입력해주세요.{% else %}AI로 팀 대표 사진을 생성하고 싶다면 팀의 특징을 입력해주세요. 예) 보라색 분위기, 개발자 팀, 나무 뿌리 로고, 미래적인 느낌, ROOT 팀 감성{% endif %}"></textarea>
+
+            </section>
+            {% endif %}
+
+            {% if not edit_team and (member or member_count < 4) %}
+            {% set portfolios = member.portfolio if member and member.portfolio else [{}] %}
+            <section class="form-card">
+                <h2>
+                    {% if member and is_edit_flow %}
+                        {{ member_position }}번째 팀원 정보 수정
+                    {% elif member %}
+                        팀원 정보 수정
+                    {% elif member_count == 0 %}
+                        첫 번째 팀원 정보
+                    {% else %}
+                        {{ member_count + 1 }}번째 팀원 정보
+                    {% endif %}
+                </h2>
+
+                <div class="form-grid">
+                    <div>
+                        <label>이름</label>
+                        <input type="text" name="name" value="{{ member.name if member else '' }}">
+                    </div>
+
+                    <div>
+                        <label>학번</label>
+                        <input type="text" name="student_number" value="{{ member.student_number if member else '' }}">
+                    </div>
+
+                    <div>
+                        <label>전공</label>
+                        <input type="text" name="major" value="{{ member.major if member else '' }}">
+                    </div>
+
+                    <div>
+                        <label>핸드폰</label>
+                        <input type="text" name="phone" value="{{ member.phone if member else '' }}">
+                    </div>
+
+                    <div>
+                        <label>이메일</label>
+                        <input type="email" name="email" value="{{ member.email if member else '' }}">
+                    </div>
+                </div>
+
+                <div class="option-area">
+
+                    <div>
+                        <label>역할</label>
+                        <div class="radio-row">
+                            <label><input type="radio" name="role" value="팀장" {% if member and member.role == '팀장' %}checked{% endif %}> 팀장</label>
+                            <label><input type="radio" name="role" value="팀원" {% if member and member.role == '팀원' %}checked{% endif %}> 팀원</label>
+                        </div>
+                    </div>
+                </div>
+
+                <label>프로그래밍 언어</label>
+                <div class="radio-row language-row">
+                    <label><input type="checkbox" name="languages" value="Python" {% if member and 'Python' in member.languages %}checked{% endif %}> Python</label>
+                    <label><input type="checkbox" name="languages" value="Java" {% if member and 'Java' in member.languages %}checked{% endif %}> Java</label>
+                    <label><input type="checkbox" name="languages" value="C/C++" {% if member and 'C/C++' in member.languages %}checked{% endif %}> C/C++</label>
+                    <label><input type="checkbox" name="languages" value="HTML/CSS" {% if member and 'HTML/CSS' in member.languages %}checked{% endif %}> HTML/CSS</label>
+                    <label><input type="checkbox" name="languages" value="SQL" {% if member and 'SQL' in member.languages %}checked{% endif %}> SQL</label>
+                    <label class="etc-language">
+                        <input type="checkbox" name="language_etc_check" {% if member_custom_language %}checked{% endif %}>
+                        <input type="text" name="language_etc" placeholder="직접 입력" value="{{ member_custom_language }}">
+                    </label>
+                </div>
+
+                <label>프로필 사진</label>
+
+                <div class="sketch-upload-box">
+                    <div class="sketch-upload-top">
+
+                        <input type="file" name="profile_image" class="sketch-file-input">
+
+                        <button type="button" class="file-clear-btn sketch-cancel-btn">
+                            취소
+                        </button>
+                    </div>
+
+                <textarea class="sketch-ai-input" name="profile_ai_prompt" placeholder="{% if member %}AI 이미지 재생성을 원할 시 새로운 프롬프트를 다시 입력해주세요.{% else %}AI로 프로필 사진을 생성하고 싶다면 본인의 특징을 입력해주세요. 예) 안경 쓴 개발자, 보라색 후드, 차분한 분위기, 게임 좋아함{% endif %}"></textarea>
+
+                <label>GitHub 아이디</label>
+                    <input type="text" name="github" placeholder="GitHub 아이디 입력" value="{{ member.github|replace('https://github.com/', '') if member else '' }}">
+
+                <label>Instagram 아이디</label>
+                    <input type="text" name="sns" placeholder="Instagram 아이디 입력" value="{{ member.sns|replace('https://instagram.com/', '') if member else '' }}">
+
+                <label>포트폴리오 링크</label>
+                    <input type="url" name="portfolio_link" placeholder="https://example.com" value="{{ member.portfolio_link if member else '' }}">
+
+                <label>포트폴리오 파일</label>
+
+                <div class="file-row">
+                    <input type="file" name="portfolio_file">
+
+                    <button type="button" class="file-clear-btn">
+                        취소
+                    </button>
+
+                    {% if member and member.portfolio_file %}
+                    <p class="current-file">
+                        현재 파일: {{ member.portfolio_file_name }}
+                    </p>
+
+                    <input type="hidden"
+                        name="portfolio_file_path"
+                        value="{{ member.portfolio_file }}">
+
+                    <input type="hidden"
+                        name="portfolio_file_name"
+                        value="{{ member.portfolio_file_name }}">
+                    {% endif %}
+                </div>
+
+                <label>포트폴리오</label>
+
+                <div class="portfolio-list" id="portfolioList">
+                    {% for portfolio in portfolios %}
+                    {% set period_parts = portfolio.period.split(' ~ ') if portfolio.period else ['', ''] %}
+                    <div class="portfolio-form">
+                        <div class="portfolio-form-header">
+                            <strong>프로젝트 {{ loop.index }}</strong>
+                            <button type="button" class="portfolio-remove-btn">삭제</button>
+                        </div>
+
+                        <input type="text" name="portfolio_title" placeholder="프로젝트명" value="{{ portfolio.title }}">
+
+                        <div class="portfolio-date-row">
+                            <input type="date" name="portfolio_start_date" value="{{ period_parts[0] }}">
+                            <span>~</span>
+                            <input type="date" name="portfolio_end_date" value="{{ period_parts[1] }}">
+                        </div>
+
+                        <input type="text" name="portfolio_role" placeholder="역할" value="{{ portfolio.role }}">
+
+                        <textarea name="portfolio_desc" placeholder="설명">{{ portfolio.desc }}</textarea>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <button type="button" class="portfolio-add-btn" id="addPortfolioBtn">
+                    프로젝트 추가
+                </button>
+            </section>
+            {% elif not edit_team %}
+            <section class="form-card">
+                <h2>팀원 입력 완료</h2>
+                <p style="color:#666; font-size:15px; line-height:1.7;">
+                    최대 4명의 팀원 정보가 모두 입력되었습니다.<br>
+                    결과 보기 버튼을 눌러 결과 페이지로 이동하세요.
+                </p>
+            </section>
+            {% endif %}
+
+            <p style="text-align:right; font-size:13px; color:#666;">
+                {% if edit_team %}
+                    팀 정보 수정 중
+                {% elif member and is_edit_flow %}
+                    현재 {{ member_position }} / {{ member_count }}명 팀원 수정 중
+                {% else %}
+                    현재 {{ member_count }} / 4명
+                {% endif %}
+            </p>
+            <div class="form-buttons">
+
+            <div class="form-buttons-left">
+                {% if edit_team %}
+                <button type="button" class="btn-light"
+                        onclick="location.href='{{ url_for('result') }}'">
+                    취소
+                </button>
+                {% elif not member and member_count > 0 %}
+                <button type="button" class="btn-light"
+                        onclick="location.href='{{ url_for('reset_team') }}'">
+                    처음부터
+                </button>
+                {% endif %}
+
+                {% if not edit_team and member and is_edit_flow and member_index > 0 %}
+                <button type="submit" name="action" value="previous" class="btn-light back-btn">
+                    이전 팀원
+                </button>
+                {% elif not edit_team and not member and member_count > 0 %}
+                <button type="submit" name="action" value="back" class="btn-light back-btn" formnovalidate>
+                    이전 팀원
+                </button>
+                {% endif %}
+            </div>
+
+            <div class="form-buttons-right">
+                {% if edit_team %}
+                <button type="submit" name="action" value="save_team" class="btn-purple">
+                    저장
+                </button>
+                {% elif member and is_edit_flow %}
+                    {% if member_index + 1 < member_count %}
+                    <button type="submit" name="action" value="edit_next" class="btn-outline">
+                        다음 팀원
+                    </button>
+                    {% else %}
+                        {% if member_count < 4 %}
+                        <button type="submit" name="action" value="add_member" class="btn-outline">
+                            다음 팀원
+                        </button>
+                        {% endif %}
+                        <button type="submit" name="action" value="save_result" class="btn-purple">
+                            결과 보기
+                        </button>
+                    {% endif %}
+                {% elif member %}
+                <button type="submit" name="action" value="edit" class="btn-outline">
+                    저장
+                </button>
+                {% elif member_count < 3 %}
+                <button type="submit" name="action" value="add" class="btn-outline">
+                    다음 팀원
+                </button>
+                {% endif %}
+
+                {% if not edit_team and not member %}
+                <button type="submit" name="action" value="make" class="btn-purple">
+                    결과 보기
+                </button>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+        </form>
+    </div>
+</div>
+<div class="ai-loading-overlay" id="aiLoadingOverlay" role="status" aria-live="polite">
+    <div class="ai-loading-panel">
+        <div class="ai-loading-spinner" aria-hidden="true"></div>
+        <p class="ai-loading-title">AI 이미지 생성 중</p>
+        <p class="ai-loading-desc">프롬프트를 바탕으로 사진을 만들고 있어요. 잠시만 기다려주세요.</p>
+    </div>
+</div>
+<script>
+const inputForm = document.querySelector("form");
+const aiLoadingOverlay = document.getElementById("aiLoadingOverlay");
+
+function hasValue(selector) {
+    const field = inputForm.querySelector(selector);
+    return field && field.value.trim().length > 0;
+}
+
+function hasFile(selector) {
+    const field = inputForm.querySelector(selector);
+    return field && field.files && field.files.length > 0;
+}
+
+inputForm.addEventListener("submit", function() {
+    const needsTeamImage = hasValue('textarea[name="team_prompt"]') && !hasFile('input[name="team_image"]');
+    const needsProfileImage = hasValue('textarea[name="profile_ai_prompt"]') && !hasFile('input[name="profile_image"]');
+
+    if (needsTeamImage || needsProfileImage) {
+        aiLoadingOverlay.classList.add("is-active");
+    }
+});
+
+inputForm.addEventListener("keydown", function(e) {
+    if (e.key === "Enter" && e.target.tagName !== "TEXTAREA" && !e.isComposing) {
+        e.preventDefault();
+    }
+});
+
+const portfolioList = document.getElementById("portfolioList");
+const addPortfolioBtn = document.getElementById("addPortfolioBtn");
+
+function updatePortfolioHeaders() {
+    if (!portfolioList) {
+        return;
+    }
+
+    portfolioList.querySelectorAll(".portfolio-form").forEach(function(item, index) {
+        item.querySelector("strong").textContent = "프로젝트 " + (index + 1);
+        item.querySelector(".portfolio-remove-btn").disabled = portfolioList.children.length === 1;
+    });
+}
+
+function bindPortfolioRemove(button) {
+    button.addEventListener("click", function() {
+        if (portfolioList.children.length === 1) {
+            button.closest(".portfolio-form").querySelectorAll("input, textarea").forEach(function(field) {
+                field.value = "";
+            });
+            return;
+        }
+
+        button.closest(".portfolio-form").remove();
+        updatePortfolioHeaders();
+    });
+}
+
+if (portfolioList && addPortfolioBtn) {
+    portfolioList.querySelectorAll(".portfolio-remove-btn").forEach(bindPortfolioRemove);
+
+    addPortfolioBtn.addEventListener("click", function() {
+        const clone = portfolioList.querySelector(".portfolio-form").cloneNode(true);
+
+        clone.querySelectorAll("input, textarea").forEach(function(field) {
+            field.value = "";
+        });
+
+        bindPortfolioRemove(clone.querySelector(".portfolio-remove-btn"));
+        portfolioList.appendChild(clone);
+        updatePortfolioHeaders();
+    });
+
+    updatePortfolioHeaders();
+}
+</script>
+<script>
+    const darkModeBtn = document.getElementById("darkModeBtn");
+
+    // 페이지가 열릴 때 저장된 다크모드 상태 적용
+    if (localStorage.getItem("darkMode") === "on") {
+        document.body.classList.add("dark-mode");
+        darkModeBtn.textContent = "☀️";
+    }
+
+    darkModeBtn.addEventListener("click", function () {
+        document.body.classList.toggle("dark-mode");
+
+        if (document.body.classList.contains("dark-mode")) {
+            localStorage.setItem("darkMode", "on");
+            darkModeBtn.textContent = "☀️";
+        } else {
+            localStorage.setItem("darkMode", "off");
+            darkModeBtn.textContent = "🌙";
+        }
+    });
+</script>
+<script>
+document.querySelectorAll(".file-clear-btn").forEach(function(button) {
+    button.addEventListener("click", function() {
+        const fileInput = button.parentElement.querySelector('input[type="file"]');
+        fileInput.value = "";
+    });
+});
+</script>
+</body>
+</html>

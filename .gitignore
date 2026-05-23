@@ -256,3 +256,7 @@ $RECYCLE.BIN/
 # 사용자 업로드 파일들
 Subject3_2/static/uploads/*
 !Subject3_2/static/uploads/.gitkeep
+teamsub5/FrontEnd/static/uploads/*
+!teamsub5/FrontEnd/static/uploads/.gitkeep
+teamsub5/BackEnd/static/uploads/*
+!teamsub5/BackEnd/static/uploads/.gitkeep

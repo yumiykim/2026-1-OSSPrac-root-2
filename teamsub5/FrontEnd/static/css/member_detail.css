@@ -1,0 +1,408 @@
+/* 팀원 상세 페이지 */
+.detail-container {
+    padding: 12px 24px;
+}
+
+.profile-detail-card {
+    border: 1px solid #eee;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+.detail-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 6px;
+}
+
+.detail-top {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 70px;
+    min-height: 210px;
+}
+
+.detail-photo img {
+    width: 190px;
+    height: 190px;
+    background: transparent;
+}
+
+.detail-info {
+    flex: 1;
+    padding-top: 6px;
+    max-width: 480px;
+    margin-right: auto;
+}
+
+.detail-info h1 {
+    margin: 0 0 18px;
+    font-size: 30px;
+}
+
+.info-row {
+    display: flex;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+.info-row span {
+    width: 80px;
+    font-weight: 700;
+    color: #555;
+}
+
+.info-row p {
+    margin: 0;
+    color: #222;
+}
+
+.detail-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+    margin-left: auto;
+    align-self: center;
+    position: absolute;
+    right: 42px;
+    bottom: 34px;
+}
+
+.small-btn {
+    padding: 9px 14px;
+    border-radius: 7px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    border: 0;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.small-btn.gray {
+    background: #f1f1f5;
+    color: #333;
+}
+
+.small-btn.purple {
+    background: #6c63ff;
+    color: white;
+}
+
+.small-btn.danger {
+    background: #f1f1f5;
+    color: #333;
+}
+
+.inline-delete-form {
+    margin: 0;
+}
+
+.link-box-wrap {
+    display: flex;
+    gap: 24px;
+    margin: 26px 0;
+}
+
+.link-box {
+    flex: 1;
+    border: 1px solid #eee;
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    color: #222;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+}
+
+.link-box strong {
+    display: block;
+    font-size: 20px;
+    margin-bottom: 2px;
+}
+
+.link-box span,
+.link-handle {
+    display: block;
+    font-size: 13px;
+    color: #666;
+    word-break: break-all;
+}
+
+.portfolio-section {
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.portfolio-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.portfolio-section h2 {
+    font-size: 22px;
+    margin: 0;
+}
+
+.portfolio-resource-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.portfolio-resource-btn {
+    border: 1px solid #6c63ff;
+    border-radius: 9px;
+    color: #6c63ff;
+    padding: 8px 11px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.portfolio-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 13px;
+}
+
+.portfolio-table th,
+.portfolio-table td {
+    border-bottom: 1px solid #eee;
+    border-right: 1px solid #eee;
+    padding: 14px 14px;
+    text-align: center;
+    vertical-align: top;
+}
+
+.portfolio-table th:last-child,
+.portfolio-table td:last-child {
+    border-right: none;
+}
+
+.portfolio-table th {
+    background: #f6f4ff;
+    color: #333;
+}
+@media print {
+    @page {
+        margin: 14mm;
+    }
+
+    * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    body {
+        background: white;
+        display: flex;
+        justify-content: center;
+        padding: 24px 0;
+    }
+
+    .page {
+        width: 600px;
+        min-height: auto;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        overflow: hidden;
+    }
+
+    .navbar,
+    .detail-toolbar,
+    .detail-buttons {
+        display: none;
+    }
+
+    .detail-container {
+        padding: 28px;
+    }
+
+    .profile-detail-card,
+    .link-box {
+        box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    }
+}
+
+.detail-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 4px 12px 0;
+}
+.link-icon {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    margin-bottom: 6px;
+}
+
+.portfolio-table td,
+.portfolio-table th {
+    word-break: keep-all;
+}
+
+.portfolio-table th:nth-child(1),
+.portfolio-table td:nth-child(1) {
+    width: 28%;
+    white-space: normal;
+    vertical-align: middle;
+}
+
+.portfolio-table th:nth-child(2),
+.portfolio-table td:nth-child(2) {
+    width: 20%;
+    padding-left: 18px;
+    padding-right: 18px;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.portfolio-table th:nth-child(3),
+.portfolio-table td:nth-child(3) {
+    width: 14%;
+    padding-left: 18px;
+    padding-right: 18px;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.portfolio-table th:nth-child(4),
+.portfolio-table td:nth-child(4) {
+    width: 38%;
+    text-align: left;
+    white-space: normal;
+    line-height: 1.6;
+}
+.detail-container {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 18px 24px 48px;
+}
+
+.profile-detail-card,
+.link-box,
+.portfolio-section {
+    border-radius: 18px;
+}
+
+.profile-detail-card {
+    min-height: 210px;
+    padding: 30px 42px;
+}
+
+.link-box-wrap {
+    gap: 18px;
+}
+
+.portfolio-section {
+    margin-top: 12px;
+}
+
+.portfolio-section h2 {
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 18px;
+}
+
+
+.profile-detail-card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.detail-info h1 {
+    letter-spacing: -1px;
+}
+
+.detail-photo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 240px;
+}
+
+.detail-photo img {
+    width: 220px;
+    height: 220px;
+    object-fit: contain;
+    border-radius: 0;
+}
+.profile-detail-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 18px;
+    right: 34px;
+
+    width: 210px;
+    height: 210px;
+
+    background-image: url("/static/images/root_logo.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    opacity: 0.1;
+
+    pointer-events: none;
+}
+.generated-page .profile-detail-card::before {
+    content: none !important;
+}
+/*깃허브/sns 입력 안 되었을 때 비활성화*/
+.disabled-link-box {
+    opacity: 0.45;
+    pointer-events: none;
+    cursor: default;
+}
+
+.disabled-link-box .link-handle {
+    color: #888 !important;
+    font-size: 13px;
+}
+
+body.dark-mode .disabled-link-box .link-handle {
+    color: #9b9ba7 !important;
+}
+.small-btn.danger {
+    background: #fff1f3;
+    color: #ff4f6d;
+    border: 1.5px solid #ff9fb0;
+}
+
+.small-btn.danger:hover {
+    background: #ffe1e7;
+    color: #ff3158;
+    border-color: #ff7f96;
+}
+
+body.dark-mode .small-btn.danger {
+    background: rgba(255, 143, 163, 0.12) !important;
+    color: #ff9fb0 !important;
+    border: 1.5px solid rgba(255, 143, 163, 0.55) !important;
+}
+
+body.dark-mode .small-btn.danger:hover {
+    background: rgba(255, 143, 163, 0.2) !important;
+    color: #ffb3c1 !important;
+    border-color: #ffb3c1 !important;
+}
