@@ -1,7 +1,7 @@
 services:
   app:
     build: .
-    image: yumiykim/root-team-web:latest
+    image: ${DOCKER_USR}/root-team-web:latest
     container_name: root-team-web
     ports:
       - "8000:80"
