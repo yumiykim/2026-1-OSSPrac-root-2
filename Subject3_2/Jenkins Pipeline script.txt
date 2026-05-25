@@ -1,17 +1,17 @@
 pipeline {
-    agent any  
+    agent any
 
     triggers {
         pollSCM('H/3 * * * *')
-    } 
+    }
 
     environment {
-        DOCKER = credentials('dockerhub')    
-    } 
+        DOCKER = credentials('dockerhub')
+    }
 
     stages {
         stage('Prepare') {
-            steps {                         
+            steps {
                 git url : 'https://github.com/CSID-DGU/2026-1-OSSPrac-root-2.git',
                     branch : 'main',
                     credentialsId: 'github'
