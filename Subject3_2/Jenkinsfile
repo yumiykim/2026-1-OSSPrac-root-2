@@ -20,7 +20,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                dir('.'){
+                dir('Subject3_2'){
                     sh 'docker compose build app'
                 }
            }
